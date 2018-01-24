@@ -1,28 +1,26 @@
+import GameObject from './GameObject';
 import Vec2 from './Vec2';
 
-class Snake {
-  constructor(pos, vel, size) {
-    this.head = pos ? pos : new Vec2(0, 0);
-    this.direction = vel ? vel : new Vec2(1, 0);
+class Snake extends GameObject {
+  constructor(position, direction, size) {
+    super(position, direction);
     this.body = [];
     this.size = size || 3;
   }
 
-  crawl() {
-    this.body.push(this.head.copy());
-    this.head.addTo(this.direction);
-
-    this.shave();
-    return this;
+  move() {
+    this.body.push(this.position.copy());
+    super.move();
+    this.slice();
   }
 
   die() {
     this.size = 3;
-    this.shave();
+    this.slice();
   }
 
-  shave() {
-    while (this.body.length > this.size) this.body.shift();
+  slice() {
+    this.body = this.body.slice(this.body.length - this.size);
   }
 
   grow() {
@@ -31,17 +29,16 @@ class Snake {
 
   isEatingItself() {
     for (let bodyPart of this.body) {
-      if (Vec2.equals(bodyPart, this.head)) {
+      if (Vec2.equals(bodyPart, this.position)) {
         return true;
       }
     }
     return false;
   }
 
-  setDirection(x, y) {
-    const newDir = new Vec2(x, y);
-    if (!Vec2.opposites(this.direction, newDir)) {
-      this.direction = newDir;
+  setDirection(dir) {
+    if (!Vec2.opposites(this.direction, dir)) {
+      this.direction = dir;
     }
     return this.direction;
   }
