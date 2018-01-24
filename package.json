@@ -1,0 +1,13 @@
+{
+  "name": "snek",
+  "version": "1.0.0",
+  "description": "Multiplayer Snake Game",
+  "license": "ISC",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": "github:zettca/snek",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
