@@ -3,50 +3,63 @@ import { EventEmitter } from 'events';
 import Vec2 from './Vec2';
 import Food from './Food';
 import Snake from './Snake';
-import { tickTime, tileCount } from './gameConfig';
-import { vecFromDirection } from './inputHandlers';
 
-class Game extends EventEmitter {
-  constructor() {
+class GameManager extends EventEmitter {
+  constructor(tickTime, tileCount) {
     super();
     this.ticks = 0;
-    this.apple = new Food(this.getRandomPos());
-    this.snakes = [new Snake(this.getRandomPos(), new Vec2(1, 0))];
+    this.tickTime = tickTime || 100;
+    this.tileCount = tileCount || { x: 20, y: 20 };
+
+    this.apple = new Food(this.getRandomPos(this.tileCount));
+    this.snakes = [];
 
     this.gameTimer = null;
     this.tick = this.tick.bind(this);
-
-    // playing around
-    window.addSnek = () => this.snakes.push(new Snake(this.getRandomPos()));
-    window.resetApple = () => this.apple.position = this.getRandomPos();
-    window.stopGame = this.stop.bind(this);
-
-    this.start();
   }
 
   getGameConfig() {
     return {
-      tilesX: tileCount.x,
-      tilesY: tileCount.y,
+      tilesX: this.tileCount.x,
+      tilesY: this.tileCount.y,
     };
   }
 
   getGameState() {
     const { ticks, apple, snakes } = this;
     return {
-      tileCount,
       ticks,
       apple,
       snakes
     };
   }
 
-  sendDirection(dirCode) {
-    console.log('Received direction ' + dirCode);
-    this.snakes[0].setDirection(vecFromDirection(dirCode));
+  vecFromDirection(direction) {
+    switch (direction) {
+      case 'LEFT':
+        return new Vec2(-1, 0);
+      case 'UP':
+        return new Vec2(0, -1);
+      case 'RIGHT':
+        return new Vec2(1, 0);
+      case 'DOWN':
+        return new Vec2(0, 1);
+      default:
+        return new Vec2(1, 0);
+    }
   }
 
-  getRandomPos() {
+  sendDirection(dirCode) {
+    // TODO: implement multiple snakes movement (ID:Socket)
+    this.snakes[0].setDirection(this.vecFromDirection(dirCode));
+  }
+
+  addSnake() {
+    const snake = new Snake(this.getRandomPos(this.tileCount), new Vec2(1, 0));
+    this.snakes.push(snake);
+  }
+
+  getRandomPos(tileCount) {
     const { x, y } = tileCount;
     const pos = [x, y].map(i => Math.floor(i * Math.random()));
     return new Vec2(...pos);
@@ -57,7 +70,7 @@ class Game extends EventEmitter {
   }
 
   handleWrapping(snake) {
-    const { x, y } = tileCount;
+    const { x, y } = this.tileCount;
     if (snake.position.x < 0) snake.position.x = x - 1;
     if (snake.position.y < 0) snake.position.y = y - 1;
     if (snake.position.x > x - 1) snake.position.x = 0;
@@ -67,13 +80,13 @@ class Game extends EventEmitter {
   handleCollisions(snake) {
     if (snake.isEatingItself()) snake.die();
     if (Vec2.equals(snake.position, this.apple.position)) {
-      this.apple.position = this.getRandomPos();
+      this.apple.position = this.getRandomPos(this.tileCount);
       snake.grow();
     }
   }
 
   start() {
-    this.gameTimer = setInterval(this.tick, tickTime);
+    this.gameTimer = setInterval(this.tick, this.tickTime);
   }
 
   stop() {
@@ -93,4 +106,4 @@ class Game extends EventEmitter {
   }
 }
 
-export default Game;
+export default GameManager;

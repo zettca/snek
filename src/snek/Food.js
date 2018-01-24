@@ -1,6 +1,6 @@
-import GameObject from './GameObject';
+import Entity from './Entity';
 
-class Food extends GameObject {
+class Food extends Entity {
   constructor(position, value) {
     super(position);
     this.value = value || 1;

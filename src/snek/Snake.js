@@ -1,7 +1,7 @@
-import GameObject from './GameObject';
+import Entity from './Entity';
 import Vec2 from './Vec2';
 
-class Snake extends GameObject {
+class Snake extends Entity {
   constructor(position, direction, size) {
     super(position, direction);
     this.body = [];

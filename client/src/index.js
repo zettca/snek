@@ -1,36 +1,34 @@
 import './index.css';
 import registerServiceWorker from './serviceWorker';
-import SnekGame from './snek/Game';
-import { dirFromKeyCode, dirFromTouch } from './snek/inputHandlers';
+import { dirFromKeyCode, dirFromTouch } from './inputHandlers';
+import io from 'socket.io-client';
 
 const root = document.getElementById('root');
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
-const touchStart = { x: 0, y: 0 };
-
 // canvas setup
+const touchStart = { x: 0, y: 0 };
 const [width, height] = [300, 300];
 canvas.width = width;
 canvas.height = height;
 window.canvas = canvas;
 root.appendChild(canvas);
-root.addEventListener('keydown', handleKey);
+root.addEventListener('keydown', handleKeyDown);
 root.addEventListener('touchstart', handleTouchStart, false);
 root.addEventListener('touchend', handleTouchEnd, false);
 
-// gameInstance setup
-const snekInstance = new SnekGame();
-const { tilesX, tilesY } = snekInstance.getGameConfig();
-const tileSize = {
-  x: Math.floor(width / tilesX),
-  y: Math.floor(width / tilesY),
-};
+// Game setup
+const tileSize = { x: 20, y: 20 };
+const socket = io('http://localhost:8080');
 
-snekInstance.on('statechange', () => {
-  const gameState = snekInstance.getGameState();
-  //console.log(gameState);
+socket.on('gamestart', (gameConfig) => {
+  const { tilesX, tilesY } = gameConfig;
+  tileSize.x = Math.floor(width / tilesX);
+  tileSize.y = Math.floor(width / tilesY);
+});
 
+socket.on('statechange', (gameState) => {
   drawGame(gameState);
 });
 
@@ -38,8 +36,9 @@ snekInstance.on('statechange', () => {
 
 registerServiceWorker();
 
-function handleKey(e) {
-  snekInstance.sendDirection(dirFromKeyCode(e.code));
+function handleKeyDown(e) {
+  const dir = dirFromKeyCode(e.code);
+  socket.emit('input', dir);
 }
 
 function handleTouchStart(e) {
@@ -51,7 +50,7 @@ function handleTouchEnd(e) {
   const dX = e.changedTouches[0].screenX - touchStart.x;
   const dY = e.changedTouches[0].screenY - touchStart.y;
   const dir = dirFromTouch(dX, dY);
-  if (dir) snekInstance.sendDirection(dir);
+  if (dir) socket.emit('input', dir);
 }
 
 function drawSquare(pos, color) {

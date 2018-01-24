@@ -1,6 +1,6 @@
 import Vec2 from './Vec2';
 
-class GameObject {
+class Entity {
   constructor(position, direction) {
     this.position = this.initVecArg(position);
     this.direction = this.initVecArg(direction);
@@ -16,4 +16,4 @@ class GameObject {
 
 }
 
-export default GameObject;
+export default Entity;
