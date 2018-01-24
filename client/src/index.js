@@ -69,10 +69,11 @@ function drawGame(gameState) {
   ctx.fillRect(0, 0, width, height);
 
   // Draw Snakes
-  snakes.forEach((snake) => {
+  for (const sid in snakes) {
+    const snake = snakes[sid];
     drawSquare(snake.position, '#8BC34A');
     snake.body.forEach((part) => drawSquare(part, '#689F38'));
-  });
+  }
 
   // Draw Apple
   drawSquare(apple.position, '#FF0000');

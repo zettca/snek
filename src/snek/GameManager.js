@@ -12,7 +12,7 @@ class GameManager extends EventEmitter {
     this.tileCount = tileCount || { x: 20, y: 20 };
 
     this.apple = new Food(this.getRandomPos(this.tileCount));
-    this.snakes = [];
+    this.snakes = {};
 
     this.gameTimer = null;
     this.tick = this.tick.bind(this);
@@ -49,14 +49,19 @@ class GameManager extends EventEmitter {
     }
   }
 
-  sendDirection(dirCode) {
+  sendDirection(id, dirCode) {
     // TODO: implement multiple snakes movement (ID:Socket)
-    this.snakes[0].setDirection(this.vecFromDirection(dirCode));
+    const snake = this.snakes[id];
+    snake.setDirection(this.vecFromDirection(dirCode));
   }
 
-  addSnake() {
+  addSnake(id) {
     const snake = new Snake(this.getRandomPos(this.tileCount), new Vec2(1, 0));
-    this.snakes.push(snake);
+    this.snakes[id] = snake;
+  }
+
+  removeSnake(id) {
+    delete this.snakes[id];
   }
 
   getRandomPos(tileCount) {
@@ -96,12 +101,11 @@ class GameManager extends EventEmitter {
 
   tick() {
     this.ticks++;
-    for (let snake of this.snakes) {
-      this.handleMovement(snake);
-      this.handleWrapping(snake);
-      this.handleCollisions(snake);
+    for (let sid in this.snakes) {
+      this.handleMovement(this.snakes[sid]);
+      this.handleWrapping(this.snakes[sid]);
+      this.handleCollisions(this.snakes[sid]);
     }
-
     this.emit('statechange');
   }
 }

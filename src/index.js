@@ -26,19 +26,16 @@ snekInstance.on('statechange', () => {
 
 io.on('connection', (socket) => {
   sockets.push(socket);
-  snekInstance.addSnake();
+  snekInstance.addSnake(socket.id);
 
-  socket.on('input', handleInput);
-  socket.on('disconnect', handleDisconnect.bind(socket));
+  socket.on('input', (data) => {
+    snekInstance.sendDirection(socket.id, data);
+  });
+  socket.on('disconnect', () => {
+    snekInstance.removeSnake(socket.id);
+    sockets.splice(sockets.indexOf(socket), 1);
+  });
 });
-
-function handleInput(data) {
-  snekInstance.sendDirection(data);
-}
-
-function handleDisconnect(socket) {
-  sockets.splice(sockets.indexOf(socket), 1);
-}
 
 const port = process.env.PORT || 8080;
 http.listen(port, () => {
