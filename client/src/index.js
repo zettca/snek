@@ -1,7 +1,8 @@
+import os from 'os';
+import io from 'socket.io-client';
 import './index.css';
 import registerServiceWorker from './serviceWorker';
 import { dirFromKeyCode, dirFromTouch } from './inputHandlers';
-import io from 'socket.io-client';
 
 const root = document.getElementById('root');
 const canvas = document.createElement('canvas');
@@ -9,10 +10,9 @@ const ctx = canvas.getContext('2d');
 
 // canvas setup
 const touchStart = { x: 0, y: 0 };
-const [width, height] = [300, 300];
+const [width, height] = [400, 400];
 canvas.width = width;
 canvas.height = height;
-window.canvas = canvas;
 root.appendChild(canvas);
 root.addEventListener('keydown', handleKeyDown);
 root.addEventListener('touchstart', handleTouchStart, false);
@@ -20,12 +20,21 @@ root.addEventListener('touchend', handleTouchEnd, false);
 
 // Game setup
 const tileSize = { x: 20, y: 20 };
-const socket = io('http://localhost:8080');
+const socket = io(os.hostname() + ':8080');
+const colors = [
+  { light: '#9c27b0', dark: '#6a0080' }, // purple
+  { light: '#3f51b5', dark: '#002984' }, // blue
+  { light: '#00bcd4', dark: '#008ba3' }, // cyan
+  { light: '#4caf50', dark: '#087f23' }, // green
+  { light: '#8bc34a', dark: '#5a9216' }, // green2
+  { light: '#ffeb3b', dark: '#c8b900' }, // yellow
+  { light: '#ff9800', dark: '#c66900' }, // orange
+];
 
 socket.on('gamestart', (gameConfig) => {
   const { tilesX, tilesY } = gameConfig;
   tileSize.x = Math.floor(width / tilesX);
-  tileSize.y = Math.floor(width / tilesY);
+  tileSize.y = Math.floor(height / tilesY);
 });
 
 socket.on('statechange', (gameState) => {
@@ -69,11 +78,11 @@ function drawGame(gameState) {
   ctx.fillRect(0, 0, width, height);
 
   // Draw Snakes
-  for (const sid in snakes) {
-    const snake = snakes[sid];
-    drawSquare(snake.position, '#8BC34A');
-    snake.body.forEach((part) => drawSquare(part, '#689F38'));
-  }
+  snakes.forEach((snake, i) => {
+    const color = colors[i % colors.length];
+    drawSquare(snake.position, color.light);
+    snake.body.forEach((part) => drawSquare(part, color.dark));
+  });
 
   // Draw Apple
   drawSquare(apple.position, '#FF0000');

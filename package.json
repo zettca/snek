@@ -4,8 +4,7 @@
   "description": "Multiplayer Snake Game",
   "license": "ISC",
   "scripts": {
-    "babel": "babel src -d build",
-    "prestart": "babel src -d build",
+    "prestart": "babel lib index.js -d build",
     "start": "node build/index.js"
   },
   "repository": "github:zettca/snek",
