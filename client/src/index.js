@@ -19,8 +19,7 @@ window.addEventListener('resize', resizeWindow);
 // Game setup
 const tileSize = { x: 20, y: 20 };
 const numTiles = { x: 20, y: 20 };
-const socket = io(os.hostname() + ':8080');
-let GameInterface;
+const socket = io();
 const colors = [
   { light: '#9c27b0', dark: '#6a0080' }, // purple
   { light: '#3f51b5', dark: '#002984' }, // blue
@@ -30,19 +29,13 @@ const colors = [
   { light: '#ff9800', dark: '#c66900' }, // orange
 ];
 
-socket.on('connect', handleConnect);
-socket.on('reconnect', handleConnect);
+socket.on('gamestart', handleGameStart);
+socket.on('statechange', handleGameChange);
 
 /* ============================== */
 
 resizeWindow();
 registerServiceWorker();
-
-function handleConnect() {
-  GameInterface = socket;
-  GameInterface.on('gamestart', handleGameStart);
-  GameInterface.on('statechange', handleGameChange);
-}
 
 function handleGameStart(gameConfig) {
   numTiles.x = gameConfig.tilesX;
@@ -57,7 +50,7 @@ function handleGameChange(state) {
 
 function handleKeyDown(e) {
   const dir = dirFromKeyCode(e.code);
-  GameInterface.emit('input', dir);
+  socket.emit('input', dir);
 }
 
 function handleTouchStart(e) {
@@ -69,7 +62,7 @@ function handleTouchEnd(e) {
   const dX = e.changedTouches[0].screenX - touchStart.x;
   const dY = e.changedTouches[0].screenY - touchStart.y;
   const dir = dirFromTouch(dX, dY);
-  if (dir) GameInterface.emit('input', dir);
+  if (dir) socket.emit('input', dir);
 }
 
 function resizeWindow() {
