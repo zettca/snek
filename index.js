@@ -10,7 +10,7 @@ const app = express();
 const server = http.Server(app);
 const io = sio(server);
 
-const clientPath = join(__dirname, './client/build');
+const clientPath = join(__dirname, '../client/build');
 app.use(compression());
 app.use(cors({ credentials: true, origin: true }));
 app.use('/', express.static(clientPath));
@@ -18,14 +18,13 @@ app.use('/static', express.static(clientPath + '/static'));
 
 const sockets = [];
 const gameConfig = {
-  tickTime: 100,
-  tiles: { x: 10, y: 10 },
+  tickTime: 125,
+  tiles: { x: 16, y: 16 },
 };
 const snekInstance = new SnekGame(gameConfig).start();
 
 snekInstance.on('statechange', () => {
-  const gameState = snekInstance.getGameState();
-  io.emit('statechange', gameState);
+  io.emit('statechange', snekInstance.getGameState());
 });
 
 snekInstance.on('gamestop', () => {
