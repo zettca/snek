@@ -1,8 +1,8 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from "events";
 
-import Vec2 from './Vec2.js';
-import Food from './Food.js';
-import Snake from './Snake.js';
+import Vec2 from "./Vec2.js";
+import Food from "./Food.js";
+import Snake from "./Snake.js";
 
 class GameManager extends EventEmitter {
   constructor(config) {
@@ -36,13 +36,13 @@ class GameManager extends EventEmitter {
 
   vecFromDirection(direction) {
     switch (direction) {
-      case 'LEFT':
+      case "LEFT":
         return new Vec2(-1, 0);
-      case 'UP':
+      case "UP":
         return new Vec2(0, -1);
-      case 'RIGHT':
+      case "RIGHT":
         return new Vec2(1, 0);
-      case 'DOWN':
+      case "DOWN":
         return new Vec2(0, 1);
       default:
         return new Vec2(1, 0);
@@ -65,7 +65,7 @@ class GameManager extends EventEmitter {
 
   getRandomPos(tileCount) {
     const { x, y } = tileCount;
-    const pos = [x, y].map(i => Math.floor(i * Math.random()));
+    const pos = [x, y].map((i) => Math.floor(i * Math.random()));
     return new Vec2(...pos);
   }
 
@@ -96,14 +96,14 @@ class GameManager extends EventEmitter {
 
   start() {
     this.gameTimer = setInterval(this.tick, this.tickTime);
-    this.emit('gamestart');
+    this.emit("gamestart");
     return this;
   }
 
   stop() {
     clearInterval(this.gameTimer);
     this.gameTimer = null;
-    this.emit('gamestop');
+    this.emit("gamestop");
     return this;
   }
 
@@ -115,7 +115,7 @@ class GameManager extends EventEmitter {
       this.handleWrapping(snake);
       this.handleCollisions(snake);
     }
-    this.emit('statechange');
+    this.emit("statechange");
   }
 }
 

@@ -1,4 +1,4 @@
-import Vec2 from './Vec2.js';
+import Vec2 from "./Vec2.js";
 
 class Entity {
   constructor(position, direction) {
@@ -7,13 +7,12 @@ class Entity {
   }
 
   initVecArg(arg) {
-    return (arg instanceof Vec2) ? arg : new Vec2(0, 0);
+    return arg instanceof Vec2 ? arg : new Vec2(0, 0);
   }
 
   move() {
     this.position.addTo(this.direction);
   }
-
 }
 
 export default Entity;

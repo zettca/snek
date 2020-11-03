@@ -3,11 +3,11 @@ class Vec2 {
     if (x instanceof Vec2) {
       this.x = x.x;
       this.y = x.y;
-    } else if (x == null || typeof x === 'number') {
+    } else if (x == null || typeof x === "number") {
       this.x = Number.isInteger(x) ? x : 0;
       this.y = Number.isInteger(y) ? y : 0;
     } else {
-      throw new TypeError('args must be Vec2 or integer');
+      throw new TypeError("args must be Vec2 or integer");
     }
   }
 

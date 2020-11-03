@@ -1,4 +1,4 @@
-import Entity from './Entity.js';
+import Entity from "./Entity.js";
 
 class Food extends Entity {
   constructor(position, value) {
