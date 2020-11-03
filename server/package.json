@@ -1,0 +1,17 @@
+{
+  "name": "snek-server",
+  "version": "1.0.0",
+  "description": "Multiplayer Snake Game",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "repository": "github:zettca/snek",
+  "dependencies": {
+    "compression": "^1.7.1",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "socket.io": "^2.0.4"
+  }
+}
