@@ -1,8 +1,8 @@
 import { EventEmitter } from 'events';
 
-import Vec2 from './Vec2';
-import Food from './Food';
-import Snake from './Snake';
+import Vec2 from './Vec2.js';
+import Food from './Food.js';
+import Snake from './Snake.js';
 
 class GameManager extends EventEmitter {
   constructor(config) {

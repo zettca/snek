@@ -1,4 +1,3 @@
-import os from 'os';
 import io from 'socket.io-client';
 import './index.css';
 import registerServiceWorker from './serviceWorker';

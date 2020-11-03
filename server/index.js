@@ -1,16 +1,17 @@
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import http from 'http';
 import cors from 'cors';
 import sio from 'socket.io';
 import express from 'express';
 import compression from 'compression';
-import SnekGame from './snek/GameManager';
+import SnekGame from './snek/GameManager.js';
 
 const app = express();
 const server = http.Server(app);
 const io = sio(server);
 
-const clientPath = join(__dirname, '../client/build');
+const clientPath = join(dirname(fileURLToPath(import.meta.url)), '../client/build');
 app.use(compression());
 app.use(cors({ credentials: true, origin: true }));
 app.use('/', express.static(clientPath));

@@ -2,10 +2,10 @@
   "name": "snek",
   "version": "1.0.0",
   "description": "Multiplayer Snake Game",
-  "license": "ISC",
+  "license": "MIT",
+  "type": "module",
   "scripts": {
-    "prestart": "babel lib index.js -d build",
-    "start": "node build/index.js",
+    "start": "node server",
     "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "repository": "github:zettca/snek",
@@ -16,8 +16,6 @@
     "socket.io": "^2.0.4"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-preset-env": "^1.6.1"
+    "prettier": "^2.1.2"
   }
 }
