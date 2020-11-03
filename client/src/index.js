@@ -1,7 +1,8 @@
 import io from 'socket.io-client';
 import './index.css';
-import registerServiceWorker from './serviceWorker';
 import { dirFromKeyCode, dirFromTouch } from './inputHandlers';
+
+const { REACT_APP_URL } = process.env;
 
 const root = document.getElementById('root');
 const canvas = document.createElement('canvas');
@@ -18,7 +19,6 @@ window.addEventListener('resize', resizeWindow);
 // Game setup
 const tileSize = { x: 20, y: 20 };
 const numTiles = { x: 20, y: 20 };
-const socket = io();
 const colors = [
   { light: '#9c27b0', dark: '#6a0080' }, // purple
   { light: '#3f51b5', dark: '#002984' }, // blue
@@ -28,13 +28,19 @@ const colors = [
   { light: '#ff9800', dark: '#c66900' }, // orange
 ];
 
+const socket = io(REACT_APP_URL);
+
+socket.on('connect', () => {
+  console.log(`Connected to: ${REACT_APP_URL} - ${socket.id}`);
+});
+
 socket.on('gamestart', handleGameStart);
 socket.on('statechange', handleGameChange);
 
 /* ============================== */
 
-resizeWindow();
-registerServiceWorker();
+// TODO: review window resizing
+document.addEventListener('DOMContentLoaded', resizeWindow, false);
 
 function handleGameStart(gameConfig) {
   numTiles.x = gameConfig.tilesX;
@@ -65,8 +71,8 @@ function handleTouchEnd(e) {
 }
 
 function resizeWindow() {
-  const body = document.body;
-  const size = Math.min(body.clientWidth, body.clientHeight);
+  const { clientWidth, clientHeight } = document.body || {};
+  const size = Math.min(clientWidth, clientHeight);
   canvas.width = size;
   canvas.height = size;
 
@@ -81,16 +87,20 @@ function drawCircle(pos, color) {
   ctx.ellipse(
     (pos.x + 0.5) * tileSize.x,
     (pos.y + 0.5) * tileSize.y,
-    tileSize.x / 2, tileSize.y / 2,
-    0, 0, 2 * Math.PI);
+    tileSize.x / 2,
+    tileSize.y / 2,
+    0,
+    0,
+    2 * Math.PI
+  );
   ctx.fillStyle = color;
   ctx.fill();
 }
 
 function drawSquare(pos, color) {
   const pad = 2;
-  const [x, w] = [pos.x, 1].map(n => n * tileSize.x);
-  const [y, h] = [pos.y, 1].map(n => n * tileSize.y);
+  const [x, w] = [pos.x, 1].map((n) => n * tileSize.x);
+  const [y, h] = [pos.y, 1].map((n) => n * tileSize.y);
   ctx.fillStyle = color;
   ctx.fillRect(x + pad, y + pad, w - pad, h - pad);
 }
