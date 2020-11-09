@@ -1,6 +1,6 @@
-import Vec2 from "./Vec2.js";
+import { Vec2 } from "./index.js";
 
-class Entity {
+export default class Entity {
   constructor(position, direction) {
     this.position = this.initVecArg(position);
     this.direction = this.initVecArg(direction);
@@ -14,5 +14,3 @@ class Entity {
     this.position.addTo(this.direction);
   }
 }
-
-export default Entity;

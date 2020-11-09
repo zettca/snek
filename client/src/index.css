@@ -14,3 +14,7 @@ body {
   justify-content: center;
   background-color: #333333;
 }
+
+#root canvas {
+  background-color: #212121;
+}

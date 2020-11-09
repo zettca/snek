@@ -1,3 +1,10 @@
+export const DIRECTIONS = {
+  UP: "UP",
+  DOWN: "DOWN",
+  LEFT: "LEFT",
+  RIGHT: "RIGHT",
+};
+
 export function dirFromTouch(dX, dY) {
   if (dX === 0 && dY === 0) return null;
   if (Math.abs(dX) > Math.abs(dY)) {
@@ -11,17 +18,17 @@ export function dirFromEvent(event) {
   switch (event.code) {
     case "KeyA":
     case "ArrowLeft":
-      return "LEFT";
+      return DIRECTIONS.LEFT;
     case "KeyW":
     case "ArrowUp":
-      return "UP";
+      return DIRECTIONS.UP;
     case "KeyD":
     case "ArrowRight":
-      return "RIGHT";
+      return DIRECTIONS.RIGHT;
     case "KeyS":
     case "ArrowDown":
-      return "DOWN";
+      return DIRECTIONS.DOWN;
     default:
-      return "RIGHT";
+      return null;
   }
 }

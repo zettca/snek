@@ -1,5 +1,5 @@
-import Entity from "./Entity.js";
-import Vec2 from "./Vec2.js";
+import Entity from "../manager/Entity.js";
+import Vec2 from "../manager/Vec2.js";
 
 class Snake extends Entity {
   constructor(position, direction, size) {

@@ -20,12 +20,11 @@ socket.on("connect", () => {
   console.log(`Connected to: ${REACT_APP_URL} - ${socket.id}`);
 });
 
-socket.on("gamestart", handleGameStart);
-socket.on("statechange", handleGameChange);
+socket.on("start", handleGameStart);
+socket.on("tick", handleGameChange);
 
 function handleGameStart(gameConfig) {
   const { tilesX, tilesY } = gameConfig;
-  console.log(gameConfig);
   gameRenderer.setNumTiles({ x: tilesX, y: tilesY });
 }
 
@@ -62,7 +61,6 @@ function handleTouchEnd(e) {
 }
 
 function resizeWindow() {
-  console.warn("RESIZE!");
   const { clientWidth, clientHeight } = document.body || {};
   const size = Math.min(clientWidth, clientHeight);
   canvas.width = size;
