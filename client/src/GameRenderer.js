@@ -58,7 +58,7 @@ export class GameRenderer {
 
   draw(gameState) {
     const { width, height } = this.size;
-    const { apple, snakes } = gameState;
+    const { apples, snakes } = gameState;
 
     // Draw Background
     this.ctx.fillStyle = "#212121";
@@ -71,7 +71,9 @@ export class GameRenderer {
       snake.body.forEach((part) => this.drawSquare(part, color.dark));
     });
 
-    // Draw Apple
-    this.drawCircle(apple.position, "#FF0000");
+    // Draw Apples
+    apples.forEach((apple) => {
+      this.drawCircle(apple.position, "#FF0000");
+    });
   }
 }

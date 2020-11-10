@@ -3,7 +3,7 @@ import cors from "cors";
 import sio from "socket.io";
 import express from "express";
 import compression from "compression";
-import SnekGame from "./snek/SnekManager.js";
+import SnekGame from "./snek/SnekManager";
 
 // server setup
 const app = express();
@@ -18,6 +18,7 @@ const sockets = [];
 const gameConfig = {
   tickTime: 125,
   tiles: { x: 16, y: 16 },
+  numApples: 6,
 };
 const snekGame = new SnekGame(gameConfig);
 snekGame.start();
@@ -32,7 +33,7 @@ io.on("connection", (socket) => {
   sockets.push(socket);
   snekGame.addSnake(socket.id);
 
-  socket.emit("start", snekGame.getConfig());
+  socket.emit("config", snekGame.getConfig());
 
   socket.on("input", (data) => {
     snekGame.sendDirection(socket.id, data);

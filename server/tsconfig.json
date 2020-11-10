@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "ES6",
+    "target": "ES2018",
+    "jsx": "preserve",
+    "sourceMap": true,
+    "moduleResolution": "node"
+  },
+  "exclude": ["node_modules", "**/node_modules/*"]
+}

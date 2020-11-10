@@ -20,12 +20,12 @@ socket.on("connect", () => {
   console.log(`Connected to: ${REACT_APP_URL} - ${socket.id}`);
 });
 
-socket.on("start", handleGameStart);
+socket.on("config", handleConfig);
 socket.on("tick", handleGameChange);
 
-function handleGameStart(gameConfig) {
-  const { tilesX, tilesY } = gameConfig;
-  gameRenderer.setNumTiles({ x: tilesX, y: tilesY });
+function handleConfig(gameConfig) {
+  const { tileCount } = gameConfig;
+  gameRenderer.setNumTiles({ ...tileCount });
 }
 
 function handleGameChange(state) {
