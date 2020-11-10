@@ -1,12 +1,17 @@
 import { EventEmitter } from "events";
 
-import GameManager, { Vec2 } from "../manager/index.js";
-import Food from "./Food.js";
-import Snake from "./Snake.js";
-import { vecFromDirection } from "./utils.js";
+import GameManager, { Entity, Vec2 } from "../manager";
+import { Food, Snake, Direction, vecFromDirection, randInt } from ".";
+
+export type SnakeId = string;
 
 export default class SnekManager extends EventEmitter {
-  constructor({ tiles = { x: 20, y: 20 }, tickTime = 100 }) {
+  manager: GameManager;
+  tileCount: { x: number; y: number };
+  apples: Food[];
+  snakes: Record<SnakeId, Snake>;
+
+  constructor({ tiles = { x: 20, y: 20 }, tickTime = 100, numApples = 1 }) {
     super();
     this.manager = new GameManager({
       tickTime: tickTime,
@@ -17,51 +22,80 @@ export default class SnekManager extends EventEmitter {
 
     this.tileCount = tiles;
 
-    this.apple = new Food(this.getRandomPos(this.tileCount));
+    this.apples = [];
     this.snakes = {};
+
+    for (let i = 0; i < numApples; i++) this.addApple();
   }
 
   getConfig = () => {
+    const { tileCount } = this;
     return {
-      tilesX: this.tileCount.x,
-      tilesY: this.tileCount.y,
+      tileCount,
     };
   };
 
   getGameState = () => {
-    const { ticks, apple, snakes } = this;
+    const { apples, snakes } = this;
     return {
-      ticks,
-      apple,
+      apples: apples,
       snakes: Object.values(snakes),
     };
   };
 
-  sendDirection = (id, dirCode) => {
+  sendDirection = (id: SnakeId, dirCode: Direction) => {
     const snake = this.snakes[id];
     snake.setDirection(vecFromDirection(dirCode));
   };
 
-  addSnake = (id) => {
-    const snake = new Snake(this.getRandomPos(this.tileCount), new Vec2(1, 0));
+  addSnake = (id: SnakeId) => {
+    const snake = new Snake(this.getRandomEmptyPos(), new Vec2(1, 0));
     this.snakes[id] = snake;
   };
 
-  removeSnake = (id) => {
+  removeSnake = (id: SnakeId) => {
     delete this.snakes[id];
   };
 
-  getRandomPos = (tileCount) => {
-    const { x, y } = tileCount;
-    const pos = [x, y].map((i) => Math.floor(i * Math.random()));
-    return new Vec2(...pos);
+  addApple = () => {
+    const apple = new Food(this.getRandomEmptyPos());
+    this.apples.push(apple);
   };
 
-  handleMovement = (snake) => {
+  removeApple = (idx: number) => {
+    this.apples.splice(idx, 1);
+  };
+
+  isEmpty = (pos: Vec2) => {
+    const apple = this.apples?.[0];
+    for (const apple of this.apples) if (pos.equalTo(apple.position)) return false;
+
+    for (const sid in this.snakes) {
+      const snake = this.snakes[sid];
+      if (pos.equalTo(snake.position)) return false;
+      for (const b of snake.body) {
+        if (pos.equalTo(b)) return false;
+      }
+    }
+
+    return true;
+  };
+
+  getRandomPos = () => {
+    const { x, y } = this.tileCount;
+    return new Vec2(randInt(x), randInt(y));
+  };
+
+  getRandomEmptyPos = () => {
+    const pos = this.getRandomPos();
+    return this.isEmpty(pos) ? pos : this.getRandomEmptyPos();
+  };
+
+  handleMovement = (snake: Snake) => {
     snake.move();
   };
 
-  handleWrapping = (snake) => {
+  handleWrapping = (snake: Snake) => {
     const { position } = snake;
     const { x, y } = this.tileCount;
     if (position.x < 0) position.x = x - 1;
@@ -70,27 +104,27 @@ export default class SnekManager extends EventEmitter {
     if (position.y > y - 1) position.y = 0;
   };
 
-  handleCollisions = (snake) => {
+  handleCollisions = (snake: Snake) => {
     for (const sid in this.snakes) {
       if (snake.isEatingSnake(this.snakes[sid])) {
         snake.die();
       }
     }
 
-    if (Vec2.equals(snake.position, this.apple.position)) {
-      this.apple.position = this.getRandomPos(this.tileCount);
+    const ai = this.apples.findIndex((apple) => apple.equalPosTo(snake));
+    if (ai !== -1) {
+      this.removeApple(ai);
+      this.addApple();
       snake.grow();
     }
   };
 
   start = () => {
     this.emit("start");
-    return this;
   };
 
   stop = () => {
     this.emit("stop");
-    return this;
   };
 
   tick = () => {

@@ -1,16 +1,27 @@
-import { Vec2 } from "../manager/index.js";
+import { Vec2 } from "../manager";
 
-export function vecFromDirection(direction) {
+export enum Direction {
+  Up = "UP",
+  Down = "DOWN",
+  Left = "LEFT",
+  Right = "RIGHT",
+}
+
+export function vecFromDirection(direction: Direction) {
   switch (direction) {
-    case "LEFT":
+    case Direction.Left:
       return new Vec2(-1, 0);
-    case "UP":
+    case Direction.Up:
       return new Vec2(0, -1);
-    case "RIGHT":
+    case Direction.Right:
       return new Vec2(1, 0);
-    case "DOWN":
+    case Direction.Down:
       return new Vec2(0, 1);
     default:
       return new Vec2(0, 0);
   }
+}
+
+export function randInt(max: number, min: number = 0) {
+  return Math.floor((max - min) * Math.random()) + min;
 }

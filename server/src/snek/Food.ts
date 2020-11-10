@@ -1,9 +1,11 @@
-import Entity from "../manager/Entity.js";
+import { Entity, Vec2 } from "../manager";
 
 class Food extends Entity {
-  constructor(position, value) {
+  value: number;
+
+  constructor(position: Vec2, value: number = 1) {
     super(position);
-    this.value = value || 1;
+    this.value = value;
   }
 }
 

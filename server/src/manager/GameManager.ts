@@ -10,7 +10,6 @@ export default class GameManager {
   onStop: () => void;
   onTick: () => void;
 
-
   constructor({ tickTime = 100, onStart, onStop, onTick }) {
     this.ticks = 0;
     this.tickTime = tickTime;

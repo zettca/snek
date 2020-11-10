@@ -1,4 +1,4 @@
-export { default } from "./GameManager.js";
+export { default } from "./GameManager";
 
-export { default as Entity } from "./Entity.js";
-export { default as Vec2 } from "./Vec2.js";
+export { default as Entity } from "./Entity";
+export { default as Vec2 } from "./Vec2";
