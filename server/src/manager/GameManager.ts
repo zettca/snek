@@ -1,7 +1,20 @@
 export default class GameManager {
+  ticks: number;
+  tickTime: number;
+  isPaused: boolean;
+
+  gameInterval: ReturnType<typeof setInterval>;
+  gameState: any;
+
+  onStart: () => void;
+  onStop: () => void;
+  onTick: () => void;
+
+
   constructor({ tickTime = 100, onStart, onStop, onTick }) {
     this.ticks = 0;
     this.tickTime = tickTime;
+    this.isPaused = false;
 
     this.gameInterval = null;
     this.gameState = null;
