@@ -4,7 +4,10 @@
   "description": "Multiplayer Snake Game",
   "license": "MIT",
   "type": "module",
-  "repository": "github:zettca/snek",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zettca/snek"
+  },
   "scripts": {
     "lint": "npx prettier --check"
   },
@@ -13,5 +16,8 @@
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.15.0",
     "prettier": "^2.1.2"
+  },
+  "engines": {
+    "node": "12.x"
   }
 }

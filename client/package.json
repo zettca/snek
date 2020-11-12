@@ -8,6 +8,11 @@
     "react-scripts": "^4.0.0",
     "socket.io-client": "^2.3.1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zettca/snek",
+    "directory": "client"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
