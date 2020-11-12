@@ -9,6 +9,9 @@
     "url": "https://github.com/zettca/snek"
   },
   "scripts": {
+    "postinstall": "cd server && npm install",
+    "build": "cd server && npm build",
+    "start": "cd server && npm start",
     "lint": "npx prettier --check"
   },
   "devDependencies": {
@@ -18,6 +21,6 @@
     "prettier": "^2.1.2"
   },
   "engines": {
-    "node": "12.x"
+    "node": "14.x"
   }
 }
