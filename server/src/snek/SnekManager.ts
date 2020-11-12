@@ -8,8 +8,8 @@ export type SnakeId = string;
 export interface GameOptions {
   tiles: { x: number; y: number };
   tickTime: number;
-  apples: number;
-  obstacles: Entity[];
+  apples?: number;
+  obstacles?: Entity[];
 }
 
 export default class SnekManager extends EventEmitter {

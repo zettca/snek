@@ -9,6 +9,7 @@ import SnekGame from "./snek";
 const app = express();
 app.use(compression());
 app.use(cors({ credentials: true, origin: true }));
+app.get("/", (req, res) => res.sendStatus(204));
 
 const server = new Server(app);
 const io = sio(server);
