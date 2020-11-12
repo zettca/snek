@@ -2,7 +2,7 @@ export default class Vec2 {
   x: number;
   y: number;
 
-  constructor(x: number | Vec2, y: number) {
+  constructor(x: number | Vec2, y?: number) {
     if (x instanceof Vec2) {
       this.x = x.x;
       this.y = x.y;

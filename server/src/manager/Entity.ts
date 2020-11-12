@@ -19,7 +19,7 @@ export default class Entity {
 
   equalDirTo = (e2: Entity) => Entity.equalDir(this, e2);
 
-  move = () => {
+  move() {
     this.position.addTo(this.direction);
-  };
+  }
 }

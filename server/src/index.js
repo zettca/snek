@@ -3,24 +3,23 @@ import cors from "cors";
 import sio from "socket.io";
 import express from "express";
 import compression from "compression";
-import SnekGame from "./snek/SnekManager";
+import SnekGame from "./snek";
 
 // server setup
 const app = express();
 app.use(compression());
 app.use(cors({ credentials: true, origin: true }));
 
-const server = Server(app);
+const server = new Server(app);
 const io = sio(server);
 
 // game socket setup
 const sockets = [];
-const gameConfig = {
+const snekGame = new SnekGame({
   tickTime: 125,
   tiles: { x: 16, y: 16 },
-  numApples: 6,
-};
-const snekGame = new SnekGame(gameConfig);
+  apples: 6,
+});
 snekGame.start();
 
 snekGame

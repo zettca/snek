@@ -1,10 +1,16 @@
 {
   "compilerOptions": {
-    "module": "ES6",
+    "allowJs": true,
+    "module": "ESNext",
     "target": "ES2018",
     "jsx": "preserve",
-    "sourceMap": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+
+    "newLine": "lf",
+    // "noImplicitAny": true,
+
+    "rootDir": "./src/",
+    "outDir": "./dist/"
   },
-  "exclude": ["node_modules", "**/node_modules/*"]
+  "exclude": ["node_modules", "**/node_modules/*", "dist"]
 }

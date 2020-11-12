@@ -5,14 +5,23 @@ import { Food, Snake, Direction, vecFromDirection, randInt } from ".";
 
 export type SnakeId = string;
 
+export interface GameOptions {
+  tiles: { x: number; y: number };
+  tickTime: number;
+  apples: number;
+  obstacles: Entity[];
+}
+
 export default class SnekManager extends EventEmitter {
   manager: GameManager;
   tileCount: { x: number; y: number };
   apples: Food[];
+  obstacles: Entity[];
   snakes: Record<SnakeId, Snake>;
 
-  constructor({ tiles = { x: 20, y: 20 }, tickTime = 100, numApples = 1 }) {
+  constructor(options: GameOptions) {
     super();
+    const { tiles = { x: 20, y: 20 }, tickTime = 100, apples = 1, obstacles = [] } = options;
     this.manager = new GameManager({
       tickTime: tickTime,
       onStart: this.start,
@@ -23,9 +32,11 @@ export default class SnekManager extends EventEmitter {
     this.tileCount = tiles;
 
     this.apples = [];
+    this.obstacles = obstacles;
     this.snakes = {};
 
-    for (let i = 0; i < numApples; i++) this.addApple();
+    for (let i = 0; i < apples; i++) this.addApple();
+    for (let i = 0; i < 4; i++) this.addObstacle();
   }
 
   getConfig = () => {
@@ -36,9 +47,10 @@ export default class SnekManager extends EventEmitter {
   };
 
   getGameState = () => {
-    const { apples, snakes } = this;
+    const { apples, obstacles, snakes } = this;
     return {
-      apples: apples,
+      apples,
+      obstacles,
       snakes: Object.values(snakes),
     };
   };
@@ -66,9 +78,13 @@ export default class SnekManager extends EventEmitter {
     this.apples.splice(idx, 1);
   };
 
+  addObstacle = () => {
+    const obstacle = new Entity(this.getRandomEmptyPos());
+    this.obstacles.push(obstacle);
+  };
+
   isEmpty = (pos: Vec2) => {
-    const apple = this.apples?.[0];
-    for (const apple of this.apples) if (pos.equalTo(apple.position)) return false;
+    if (this.apples.some((apple) => apple.position.equalTo(pos))) return false;
 
     for (const sid in this.snakes) {
       const snake = this.snakes[sid];
@@ -91,6 +107,16 @@ export default class SnekManager extends EventEmitter {
     return this.isEmpty(pos) ? pos : this.getRandomEmptyPos();
   };
 
+  getCollidables = () => {
+    const { snakes, obstacles } = this;
+    const collidables: Vec2[] = [];
+
+    obstacles.forEach((obs) => collidables.push(obs.position));
+    Object.values(snakes).forEach((snake) => snake.body.forEach((part) => collidables.push(part)));
+
+    return collidables;
+  };
+
   handleMovement = (snake: Snake) => {
     snake.move();
   };
@@ -105,17 +131,16 @@ export default class SnekManager extends EventEmitter {
   };
 
   handleCollisions = (snake: Snake) => {
-    for (const sid in this.snakes) {
-      if (snake.isEatingSnake(this.snakes[sid])) {
-        snake.die();
-      }
+    const collidables = this.getCollidables();
+    if (snake.isColliding(collidables)) {
+      snake.die();
     }
 
     const ai = this.apples.findIndex((apple) => apple.equalPosTo(snake));
     if (ai !== -1) {
       this.removeApple(ai);
-      this.addApple();
       snake.grow();
+      this.addApple();
     }
   };
 

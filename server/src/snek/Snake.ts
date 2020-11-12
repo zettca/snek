@@ -9,11 +9,11 @@ class Snake extends Entity {
     this.size = size;
   }
 
-  move = () => {
+  move() {
     this.body.push(this.position.copy());
     this.slice();
     super.move();
-  };
+  }
 
   die = () => {
     this.size = 2;
@@ -28,7 +28,7 @@ class Snake extends Entity {
     this.size += 1;
   };
 
-  isEatingSnake = (snake: Snake) => snake.body.some((part) => part.equalTo(this.position));
+  isColliding = (positions: Vec2[]) => positions.some((pos) => this.position.equalTo(pos));
 
   setDirection = (dir: Vec2) => {
     if (!Vec2.opposites(this.direction, dir)) {

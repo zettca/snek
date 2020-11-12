@@ -2,6 +2,7 @@
   "name": "snek-client",
   "version": "0.1.0",
   "dependencies": {
+    "color2k": "^1.1.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-scripts": "^4.0.0",

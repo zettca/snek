@@ -1,14 +1,11 @@
+import { lighten } from "color2k";
+
 export const DEFAULT_SIZE = { width: 600, height: 600 };
 export const DEFAULT_TILE_NUM = { x: 20, y: 20 };
 
-export const COLORS = [
-  { light: "#9c27b0", dark: "#6a0080" }, // purple
-  { light: "#3f51b5", dark: "#002984" }, // blue
-  { light: "#00bcd4", dark: "#008ba3" }, // cyan
-  { light: "#4caf50", dark: "#087f23" }, // green
-  { light: "#ffeb3b", dark: "#c8b900" }, // yellow
-  { light: "#ff9800", dark: "#c66900" }, // orange
-];
+// COLORS: blue purple yellow green cyan orange
+const DEFAULT_COLORS = ["#002984", "#9c27b0", "#ffeb3b", "#4caf50", "#00bcd4", "#c66900"];
+const COLORS = DEFAULT_COLORS.map((c) => ({ dark: c, light: lighten(c, 0.2) }));
 
 function calcTileSize(size, numTiles) {
   const { x, y } = numTiles;
@@ -58,7 +55,7 @@ export class GameRenderer {
 
   draw(gameState) {
     const { width, height } = this.size;
-    const { apples, snakes } = gameState;
+    const { snakes = [], apples = [], obstacles = [] } = gameState;
 
     // Draw Background
     this.ctx.fillStyle = "#212121";
@@ -67,13 +64,18 @@ export class GameRenderer {
     // Draw Snakes
     snakes.forEach((snake, i) => {
       const color = COLORS[i % COLORS.length];
-      this.drawSquare(snake.position, color.light);
       snake.body.forEach((part) => this.drawSquare(part, color.dark));
+      this.drawSquare(snake.position, color.light);
     });
 
     // Draw Apples
     apples.forEach((apple) => {
       this.drawCircle(apple.position, "#FF0000");
+    });
+
+    // Draw Obstacles
+    obstacles.forEach((obstacle) => {
+      this.drawSquare(obstacle.position, "#CCCCCC");
     });
   }
 }
