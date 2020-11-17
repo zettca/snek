@@ -1,4 +1,4 @@
-name: GH Pages
+name: CI
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  Deploy:
+  client:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,3 +27,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
           BRANCH: gh-pages
           FOLDER: client/build
+
+  server:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Deploy Heroku Docker
+        uses: akhileshns/heroku-deploy@v3.6.
+        with:
+          appdir: "server"
+          usedocker: true
+
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
