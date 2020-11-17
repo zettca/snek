@@ -9,7 +9,7 @@ import SnekGame from "./snek";
 const app = express();
 app.use(compression());
 app.use(cors({ credentials: true, origin: true }));
-app.get("/", (req, res) => res.sendStatus(204));
+app.get("/", (req, res) => res.send("🐱‍💻"));
 
 const server = new Server(app);
 const io = sio(server);
@@ -46,5 +46,5 @@ io.on("connection", (socket) => {
 
 const port = process.env.PORT || 8080;
 server.listen(port, () => {
-  console.log(`Server running at ${port}...`);
+  console.log(`Server running at http://localhost:${port}...`);
 });
