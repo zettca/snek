@@ -9,15 +9,13 @@
     "url": "https://github.com/zettca/snek"
   },
   "scripts": {
-    "postinstall": "cd server && npm install",
-    "build": "cd server && npm build",
-    "start": "cd server && npm start",
     "lint": "npx prettier --check"
   },
   "devDependencies": {
     "eslint": "^7.12.1",
-    "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-import": "^2.22.1",
     "prettier": "^2.1.2"
   },
   "engines": {
