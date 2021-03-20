@@ -5,6 +5,7 @@
     "target": "ES2018",
     "jsx": "preserve",
     "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
 
     "newLine": "lf",
     // "noImplicitAny": true,

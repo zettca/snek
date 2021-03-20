@@ -6,11 +6,9 @@ export default class GameManager {
   gameInterval: ReturnType<typeof setInterval>;
   gameState: any;
 
-  onStart: () => void;
-  onStop: () => void;
   onTick: () => void;
 
-  constructor({ tickTime = 100, onStart, onStop, onTick }) {
+  constructor({ tickTime = 100, onTick }) {
     this.ticks = 0;
     this.tickTime = tickTime;
     this.isPaused = false;
@@ -18,11 +16,7 @@ export default class GameManager {
     this.gameInterval = null;
     this.gameState = null;
 
-    this.onStart = onStart;
-    this.onStop = onStop;
     this.onTick = onTick;
-
-    this.start();
   }
 
   init = () => {
@@ -32,8 +26,6 @@ export default class GameManager {
 
   start = () => {
     this.gameInterval = setInterval(this.tick, this.tickTime);
-    const initialState = this.onStart();
-    this.gameState = initialState;
 
     this.init();
     return this;
@@ -53,7 +45,6 @@ export default class GameManager {
     clearInterval(this.gameInterval);
     this.gameInterval = null;
     this.gameState = null;
-    this.onStop();
     return this;
   };
 

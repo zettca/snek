@@ -1,4 +1,4 @@
-import io from "socket.io-client";
+import { io } from "socket.io-client";
 import "./index.css";
 import { dirFromEvent, dirFromTouch } from "./utils";
 import { GameRenderer } from "./GameRenderer";
@@ -18,6 +18,9 @@ const socket = io(REACT_APP_URL);
 
 socket.on("connect", () => {
   console.log(`Connected to: ${REACT_APP_URL} - ${socket.id}`);
+
+  const roomId = document.location.pathname.slice(1) || "room1";
+  socket.emit("join", roomId);
 });
 
 socket.on("config", handleConfig);

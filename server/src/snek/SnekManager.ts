@@ -9,7 +9,7 @@ export interface GameOptions {
   tiles: { x: number; y: number };
   tickTime: number;
   apples?: number;
-  obstacles?: Entity[];
+  obstacles?: Entity[] | number;
 }
 
 export default class SnekManager extends EventEmitter {
@@ -21,22 +21,23 @@ export default class SnekManager extends EventEmitter {
 
   constructor(options: GameOptions) {
     super();
-    const { tiles = { x: 20, y: 20 }, tickTime = 100, apples = 1, obstacles = [] } = options;
+    const { tiles = { x: 20, y: 20 }, tickTime = 100, apples = 1, obstacles = 1 } = options;
     this.manager = new GameManager({
       tickTime: tickTime,
-      onStart: this.start,
-      onStop: this.stop,
       onTick: this.tick,
     });
 
     this.tileCount = tiles;
 
     this.apples = [];
-    this.obstacles = obstacles;
+    this.obstacles = Array.isArray(obstacles) ? obstacles : [];
     this.snakes = {};
 
     for (let i = 0; i < apples; i++) this.addApple();
-    for (let i = 0; i < 4; i++) this.addObstacle();
+
+    if (Number.isInteger(obstacles)) {
+      for (let i = 0; i < obstacles; i++) this.addObstacle();
+    }
   }
 
   getConfig = () => {
@@ -145,11 +146,23 @@ export default class SnekManager extends EventEmitter {
   };
 
   start = () => {
+    this.manager.start();
     this.emit("start");
   };
 
   stop = () => {
+    this.manager.stop();
     this.emit("stop");
+  };
+
+  pause = () => {
+    this.manager.pause();
+    this.emit("pause");
+  };
+
+  resume = () => {
+    this.manager.resume();
+    this.emit("resume");
   };
 
   tick = () => {
