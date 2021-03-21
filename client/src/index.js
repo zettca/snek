@@ -19,7 +19,7 @@ const socket = io(REACT_APP_URL);
 socket.on("connect", () => {
   console.log(`Connected to: ${REACT_APP_URL} - ${socket.id}`);
 
-  const roomId = document.location.pathname.slice(1) || "room1";
+  const roomId = document.location.hash.slice(1) || "room1";
   socket.emit("join", roomId);
 });
 
