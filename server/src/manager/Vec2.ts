@@ -1,12 +1,12 @@
 export default class Vec2 {
-  x: number;
-  y: number;
+  x = 0;
+  y = 0;
 
-  constructor(x: number | Vec2, y?: number) {
+  constructor(x: number | Vec2, y = 0) {
     if (x instanceof Vec2) {
       this.x = x.x;
       this.y = x.y;
-    } else if (x == null || typeof x === "number") {
+    } else {
       this.x = Number.isInteger(x) ? x : 0;
       this.y = Number.isInteger(y) ? y : 0;
     }

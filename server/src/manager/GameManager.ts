@@ -2,20 +2,14 @@ export default class GameManager {
   ticks: number;
   tickTime: number;
   isPaused: boolean;
-
-  gameInterval: ReturnType<typeof setInterval>;
-  gameState: any;
-
+  gameInterval: number;
   onTick: () => void;
 
-  constructor({ tickTime = 100, onTick }) {
+  constructor({ tickTime = 100, onTick = () => {} }) {
     this.ticks = 0;
     this.tickTime = tickTime;
     this.isPaused = false;
-
-    this.gameInterval = null;
-    this.gameState = null;
-
+    this.gameInterval = 0;
     this.onTick = onTick;
   }
 
@@ -43,8 +37,7 @@ export default class GameManager {
 
   stop = () => {
     clearInterval(this.gameInterval);
-    this.gameInterval = null;
-    this.gameState = null;
+    this.gameInterval = 0;
     return this;
   };
 

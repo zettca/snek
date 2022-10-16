@@ -1,6 +1,6 @@
-import { Entity, Vec2 } from "../manager";
+import { Entity, Vec2 } from "../manager/index.ts";
 
-class Snake extends Entity {
+export default class Snake extends Entity {
   body: Vec2[];
   size: number;
   constructor(position: Vec2, direction: Vec2, size: number = 2) {
@@ -28,7 +28,8 @@ class Snake extends Entity {
     this.size += 1;
   };
 
-  isColliding = (positions: Vec2[]) => positions.some((pos) => this.position.equalTo(pos));
+  isColliding = (positions: Vec2[]) =>
+    positions.some((pos) => this.position.equalTo(pos));
 
   setDirection = (dir: Vec2) => {
     if (!Vec2.opposites(this.direction, dir)) {
@@ -36,5 +37,3 @@ class Snake extends Entity {
     }
   };
 }
-
-export default Snake;

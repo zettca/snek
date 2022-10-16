@@ -1,6 +1,6 @@
-import { Entity, Vec2 } from "../manager";
+import { Entity, Vec2 } from "../manager/index.ts";
 
-class Food extends Entity {
+export default class Food extends Entity {
   value: number;
 
   constructor(position: Vec2, value: number = 1) {
@@ -8,5 +8,3 @@ class Food extends Entity {
     this.value = value;
   }
 }
-
-export default Food;

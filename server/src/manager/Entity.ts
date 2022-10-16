@@ -1,4 +1,4 @@
-import { Vec2 } from ".";
+import { Vec2 } from "./index.ts";
 
 export default class Entity {
   position: Vec2;

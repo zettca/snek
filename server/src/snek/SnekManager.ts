@@ -1,7 +1,7 @@
-import { EventEmitter } from "events";
+import EventEmitter from "https://deno.land/x/eventemitter@1.2.4/mod.ts";
 
-import GameManager, { Entity, Vec2 } from "../manager";
-import { Food, Snake, Direction, vecFromDirection, randInt } from ".";
+import { Entity, GameManager, Vec2 } from "../manager/index.ts";
+import { Direction, Food, randInt, Snake, vecFromDirection } from "./index.ts";
 
 export type SnakeId = string;
 
@@ -12,7 +12,15 @@ export interface GameOptions {
   obstacles?: Entity[] | number;
 }
 
-export default class SnekManager extends EventEmitter {
+type SnekEvents = {
+  start: () => void;
+  stop: () => void;
+  pause: () => void;
+  resume: () => void;
+  tick: () => void;
+};
+
+export default class SnekManager extends EventEmitter<SnekEvents> {
   manager: GameManager;
   tileCount: { x: number; y: number };
   apples: Food[];
@@ -21,7 +29,12 @@ export default class SnekManager extends EventEmitter {
 
   constructor(options: GameOptions) {
     super();
-    const { tiles = { x: 20, y: 20 }, tickTime = 100, apples = 1, obstacles = 1 } = options;
+    const {
+      tiles = { x: 20, y: 20 },
+      tickTime = 100,
+      apples = 1,
+      obstacles = 1,
+    } = options;
     this.manager = new GameManager({
       tickTime: tickTime,
       onTick: this.tick,
@@ -103,7 +116,7 @@ export default class SnekManager extends EventEmitter {
     return new Vec2(randInt(x), randInt(y));
   };
 
-  getRandomEmptyPos = () => {
+  getRandomEmptyPos = (): Vec2 => {
     const pos = this.getRandomPos();
     return this.isEmpty(pos) ? pos : this.getRandomEmptyPos();
   };
@@ -113,7 +126,9 @@ export default class SnekManager extends EventEmitter {
     const collidables: Vec2[] = [];
 
     obstacles.forEach((obs) => collidables.push(obs.position));
-    Object.values(snakes).forEach((snake) => snake.body.forEach((part) => collidables.push(part)));
+    Object.values(snakes).forEach((snake) =>
+      snake.body.forEach((part) => collidables.push(part))
+    );
 
     return collidables;
   };

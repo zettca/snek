@@ -1,7 +1,5 @@
-export { default } from "./SnekManager";
+export { default as Food } from "./Food.ts";
+export { default as Snake } from "./Snake.ts";
+export { default as SnekManager } from "./SnekManager.ts";
 
-export { default as Food } from "./Food";
-export { default as Snake } from "./Snake";
-export { default as Manager } from "./SnekManager";
-
-export * from "./utils";
+export * from "./utils.ts";

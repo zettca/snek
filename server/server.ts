@@ -1,18 +1,8 @@
-import { createServer } from "http";
-import cors from "cors";
-import { Server } from "socket.io";
-import express from "express";
-import compression from "compression";
-import SnekGame from "./snek";
+import { serve } from "https://deno.land/std@0.159.0/http/server.ts";
+import { Server } from "https://deno.land/x/socket_io@0.2.0/mod.ts";
+import { SnekManager as SnekGame } from "./src/snek/index.ts";
 
-// server setup
-const app = express();
-app.use(compression());
-app.use(cors());
-app.get("/", (req, res) => res.sendStatus(418));
-
-const server = createServer(app);
-const io = new Server(server, { cors: { origin: "*" } });
+const io = new Server({ cors: { origin: true, credentials: true } });
 
 // game rooms setup
 const socketRooms: Record<string, SnekGame> = {};
@@ -36,7 +26,7 @@ for (const roomId in gameRooms) {
 
 io.on("connection", (socket) => {
   socket.on("join", (roomId: string) => {
-    const room = gameRooms.hasOwnProperty(roomId) ? roomId : "room1";
+    const room = gameRooms[roomId] ? roomId : "room1";
     const snekGame = gameRooms[room];
     socketRooms[socket.id] = snekGame;
     snekGame.addSnake(socket.id);
@@ -57,7 +47,5 @@ io.on("connection", (socket) => {
   });
 });
 
-const port = process.env.PORT || 8080;
-server.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}...`);
-});
+const port = Number(Deno.env.get("PORT")) || 8080;
+await serve(io.handler(), { port });

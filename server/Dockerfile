@@ -1,16 +1,13 @@
-FROM node:lts-alpine
+FROM denoland/deno:alpine
 
 WORKDIR /snek
 
-COPY package*.json ./
-
-RUN npm ci
+USER deno
 
 COPY . .
 
-RUN npm run build
-RUN npm prune --production 
+RUN deno cache server.ts 
 
 EXPOSE 8080
 
-CMD [ "npm", "start" ]
+CMD ["task", "start"]

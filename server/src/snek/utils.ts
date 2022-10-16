@@ -1,4 +1,4 @@
-import { Vec2 } from "../manager";
+import { Vec2 } from "../manager/index.ts";
 
 export enum Direction {
   Up = "UP",
@@ -22,6 +22,6 @@ export function vecFromDirection(direction: Direction) {
   }
 }
 
-export function randInt(max: number, min: number = 0) {
+export function randInt(max: number, min = 0) {
   return Math.floor((max - min) * Math.random()) + min;
 }
