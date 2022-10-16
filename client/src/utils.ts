@@ -5,7 +5,7 @@ export const DIRECTIONS = {
   RIGHT: "RIGHT",
 };
 
-export function dirFromTouch(dX, dY) {
+export function dirFromTouch(dX: number, dY: number) {
   if (dX === 0 && dY === 0) return null;
   if (Math.abs(dX) > Math.abs(dY)) {
     return dX > 0 ? "RIGHT" : "LEFT";
@@ -14,7 +14,7 @@ export function dirFromTouch(dX, dY) {
   }
 }
 
-export function dirFromEvent(event) {
+export function dirFromEvent(event: KeyboardEvent) {
   switch (event.code) {
     case "KeyA":
     case "ArrowLeft":

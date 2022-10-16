@@ -1,34 +1,27 @@
 {
   "name": "snek-client",
-  "version": "0.1.0",
-  "dependencies": {
-    "color2k": "^1.2.4",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
-    "react-scripts": "^4.0.3",
-    "socket.io-client": "^4.0.0"
-  },
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/zettca/snek",
     "directory": "client"
   },
+  "homepage": ".",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "eject": "react-scripts eject",
-    "prepare": "npm run build"
+    "start": "vite",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
-  "homepage": "./",
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version"
-    ]
+  "dependencies": {
+    "color2k": "^1.2.5",
+    "socket.io-client": "^4.5.3"
+  },
+  "devDependencies": {
+    "typescript": "^4.6.4",
+    "vite": "^3.1.0"
   }
 }

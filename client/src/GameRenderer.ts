@@ -1,13 +1,21 @@
 import { lighten } from "color2k";
+import { Dims, GameState, Vec2 } from "./types";
 
 export const DEFAULT_SIZE = { width: 600, height: 600 };
 export const DEFAULT_TILE_NUM = { x: 20, y: 20 };
 
 // COLORS: blue purple yellow green cyan orange
-const DEFAULT_COLORS = ["#002984", "#9c27b0", "#ffeb3b", "#4caf50", "#00bcd4", "#c66900"];
+const DEFAULT_COLORS = [
+  "#002984",
+  "#9c27b0",
+  "#ffeb3b",
+  "#4caf50",
+  "#00bcd4",
+  "#c66900",
+];
 const COLORS = DEFAULT_COLORS.map((c) => ({ dark: c, light: lighten(c, 0.2) }));
 
-function calcTileSize(size, numTiles) {
+function calcTileSize(size: Dims, numTiles: Vec2): Vec2 {
   const { x, y } = numTiles;
   return {
     x: Math.floor(size.width / x),
@@ -16,33 +24,49 @@ function calcTileSize(size, numTiles) {
 }
 
 export class GameRenderer {
-  constructor(ctx, { numTiles = DEFAULT_TILE_NUM, size = DEFAULT_SIZE }) {
+  ctx: CanvasRenderingContext2D;
+  tileSize: Vec2;
+  numTiles = DEFAULT_TILE_NUM;
+  size = DEFAULT_SIZE;
+
+  constructor(
+    ctx: CanvasRenderingContext2D,
+    { numTiles = DEFAULT_TILE_NUM, size = DEFAULT_SIZE }
+  ) {
     this.ctx = ctx;
     this.numTiles = numTiles;
     this.size = size;
     this.tileSize = calcTileSize(size, numTiles);
   }
 
-  setNumTiles(numTiles) {
+  setNumTiles(numTiles: Vec2) {
     this.numTiles = numTiles;
     this.tileSize = calcTileSize(this.size, this.numTiles);
   }
 
-  setSize(size) {
+  setSize(size: Dims) {
     this.size = size;
     this.tileSize = calcTileSize(this.size, this.numTiles);
   }
 
-  drawCircle(pos, color) {
+  drawCircle(pos: Vec2, color: string) {
     const { x, y } = this.tileSize;
 
     this.ctx.beginPath();
-    this.ctx.ellipse((pos.x + 0.5) * x, (pos.y + 0.5) * y, x / 2, y / 2, 0, 0, 2 * Math.PI);
+    this.ctx.ellipse(
+      (pos.x + 0.5) * x,
+      (pos.y + 0.5) * y,
+      x / 2,
+      y / 2,
+      0,
+      0,
+      2 * Math.PI
+    );
     this.ctx.fillStyle = color;
     this.ctx.fill();
   }
 
-  drawSquare(pos, color) {
+  drawSquare(pos: Vec2, color: string) {
     const { x: w, y: h } = this.tileSize;
 
     const pad = 2;
@@ -53,7 +77,7 @@ export class GameRenderer {
     this.ctx.fillRect(x + pad, y + pad, w - pad, h - pad);
   }
 
-  draw(gameState) {
+  draw(gameState: GameState) {
     const { width, height } = this.size;
     const { snakes = [], apples = [], obstacles = [] } = gameState;
 

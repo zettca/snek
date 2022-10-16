@@ -1,23 +1,24 @@
 import { io } from "socket.io-client";
 import "./index.css";
+import { GameConfig, GameState } from "./types";
 import { dirFromEvent, dirFromTouch } from "./utils";
 import { GameRenderer } from "./GameRenderer";
 
-const { REACT_APP_URL } = process.env;
+const { VITE_URL: URL } = import.meta.env;
 
-const root = document.getElementById("root");
+const root = document.getElementById("root") as HTMLDivElement;
 const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
 root.appendChild(canvas);
 
 // Game setup
 const size = { width: canvas.width, height: canvas.height };
-const gameRenderer = new GameRenderer(ctx, { size });
+const gameRenderer = new GameRenderer(ctx!, { size });
 
-const socket = io(REACT_APP_URL);
+const socket = io(URL);
 
 socket.on("connect", () => {
-  console.log(`Connected to: ${REACT_APP_URL} - ${socket.id}`);
+  console.log(`Connected to: ${URL} - ${socket.id}`);
 
   const roomId = document.location.hash.slice(1) || "room1";
   socket.emit("join", roomId);
@@ -26,37 +27,37 @@ socket.on("connect", () => {
 socket.on("config", handleConfig);
 socket.on("tick", handleGameChange);
 
-function handleConfig(gameConfig) {
+function handleConfig(gameConfig: GameConfig) {
   const { tileCount } = gameConfig;
   gameRenderer.setNumTiles({ ...tileCount });
 }
 
-function handleGameChange(state) {
+function handleGameChange(state: GameState) {
   requestAnimationFrame(() => gameRenderer.draw(state));
 }
 
 // event setup
 const touchStart = { x: 0, y: 0 };
 
-root.addEventListener("keydown", handleKeyDown);
-root.addEventListener("touchstart", handleTouchStart, false);
-root.addEventListener("touchend", handleTouchEnd, false);
+window.addEventListener("keydown", handleKeyDown);
+window.addEventListener("touchstart", handleTouchStart, false);
+window.addEventListener("touchend", handleTouchEnd, false);
 window.addEventListener("resize", resizeWindow);
 
 // TODO: review window resizing
 document.addEventListener("DOMContentLoaded", resizeWindow, false);
 
-function handleKeyDown(e) {
+function handleKeyDown(e: KeyboardEvent) {
   const dir = dirFromEvent(e);
   socket.emit("input", dir);
 }
 
-function handleTouchStart(e) {
+function handleTouchStart(e: TouchEvent) {
   touchStart.x = e.changedTouches[0].screenX;
   touchStart.y = e.changedTouches[0].screenY;
 }
 
-function handleTouchEnd(e) {
+function handleTouchEnd(e: TouchEvent) {
   const dX = e.changedTouches[0].screenX - touchStart.x;
   const dY = e.changedTouches[0].screenY - touchStart.y;
   const dir = dirFromTouch(dX, dY);
