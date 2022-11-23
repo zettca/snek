@@ -1,7 +1,73 @@
 import EventEmitter from "https://deno.land/x/eventemitter@1.2.4/mod.ts";
+import { Entity, GameManager, Vec2 } from "./manager.ts";
 
-import { Entity, GameManager, Vec2 } from "../manager/index.ts";
-import { Direction, Food, randInt, Snake, vecFromDirection } from "./index.ts";
+export type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
+
+export function vecFromDirection(direction: Direction) {
+  switch (direction) {
+    case "LEFT":
+      return new Vec2(-1, 0);
+    case "UP":
+      return new Vec2(0, -1);
+    case "RIGHT":
+      return new Vec2(1, 0);
+    case "DOWN":
+      return new Vec2(0, 1);
+    default:
+      return new Vec2(0, 0);
+  }
+}
+
+export function randInt(max: number, min = 0) {
+  return Math.floor((max - min) * Math.random()) + min;
+}
+
+export class Food extends Entity {
+  value: number;
+
+  constructor(position: Vec2, value: number = 1) {
+    super(position);
+    this.value = value;
+  }
+}
+
+export class Snake extends Entity {
+  body: Vec2[];
+  size: number;
+  constructor(position: Vec2, direction: Vec2, size: number = 2) {
+    super(position, direction);
+    this.body = [];
+    this.size = size;
+  }
+
+  move() {
+    this.body.push(this.position.copy());
+    this.slice();
+    super.move();
+  }
+
+  die = () => {
+    this.size = 2;
+    this.slice();
+  };
+
+  slice = () => {
+    this.body = this.body.slice(this.body.length - this.size);
+  };
+
+  grow = () => {
+    this.size += 1;
+  };
+
+  isColliding = (positions: Vec2[]) =>
+    positions.some((pos) => this.position.equalTo(pos));
+
+  setDirection = (dir: Vec2) => {
+    if (!Vec2.opposites(this.direction, dir)) {
+      this.direction = dir;
+    }
+  };
+}
 
 export type SnakeId = string;
 
@@ -20,7 +86,7 @@ type SnekEvents = {
   tick: () => void;
 };
 
-export default class SnekManager extends EventEmitter<SnekEvents> {
+export class SnekManager extends EventEmitter<SnekEvents> {
   manager: GameManager;
   tileCount: { x: number; y: number };
   apples: Food[];

@@ -1,6 +1,6 @@
-import { serve } from "https://deno.land/std@0.159.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.165.0/http/server.ts";
 import { Server } from "https://deno.land/x/socket_io@0.2.0/mod.ts";
-import { SnekManager as SnekGame } from "./src/snek/index.ts";
+import { SnekManager as SnekGame } from "./snek.ts";
 
 const io = new Server({ cors: { origin: true, credentials: true } });
 
