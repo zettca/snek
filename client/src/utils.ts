@@ -1,11 +1,8 @@
-export const DIRECTIONS = {
-  UP: "UP",
-  DOWN: "DOWN",
-  LEFT: "LEFT",
-  RIGHT: "RIGHT",
-};
+// import type { Direction } from "../../server/src/snek/mod.ts";
 
-export function dirFromTouch(dX: number, dY: number) {
+export type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
+
+export function dirFromTouch(dX: number, dY: number): Direction | null {
   if (dX === 0 && dY === 0) return null;
   if (Math.abs(dX) > Math.abs(dY)) {
     return dX > 0 ? "RIGHT" : "LEFT";
@@ -14,20 +11,20 @@ export function dirFromTouch(dX: number, dY: number) {
   }
 }
 
-export function dirFromEvent(event: KeyboardEvent) {
+export function dirFromEvent(event: KeyboardEvent): Direction | null {
   switch (event.code) {
     case "KeyA":
     case "ArrowLeft":
-      return DIRECTIONS.LEFT;
+      return "LEFT";
     case "KeyW":
     case "ArrowUp":
-      return DIRECTIONS.UP;
+      return "UP";
     case "KeyD":
     case "ArrowRight":
-      return DIRECTIONS.RIGHT;
+      return "RIGHT";
     case "KeyS":
     case "ArrowDown":
-      return DIRECTIONS.DOWN;
+      return "DOWN";
     default:
       return null;
   }

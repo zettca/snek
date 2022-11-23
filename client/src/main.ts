@@ -15,10 +15,14 @@ root.appendChild(canvas);
 const size = { width: canvas.width, height: canvas.height };
 const gameRenderer = new GameRenderer(ctx!, { size });
 
-const socket = io(URL);
+const searchParams = new URLSearchParams(location.search);
+
+const url = searchParams.get("server") || URL;
+
+const socket = io(url);
 
 socket.on("connect", () => {
-  console.log(`Connected to: ${URL} - ${socket.id}`);
+  console.log(`Connected to: ${url} - ${socket.id}`);
 
   const roomId = document.location.hash.slice(1) || "room1";
   socket.emit("join", roomId);
