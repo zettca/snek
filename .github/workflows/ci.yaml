@@ -41,7 +41,7 @@ jobs:
 
       - uses: actions/upload-pages-artifact@v1.0.5
         with:
-          path: dist/
+          path: client/dist/
           retention-days: 1
 
   Deploy:
