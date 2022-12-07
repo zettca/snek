@@ -17,9 +17,9 @@ const gameRenderer = new GameRenderer(ctx!, { size });
 
 const searchParams = new URLSearchParams(location.search);
 
-const url = searchParams.get("server") || URL;
+const url = searchParams.get("server") || URL || prompt("Server URL");
 
-const socket = io(url);
+const socket = io(url || "");
 
 socket.on("connect", () => {
   console.log(`Connected to: ${url} - ${socket.id}`);
@@ -28,17 +28,13 @@ socket.on("connect", () => {
   socket.emit("join", roomId);
 });
 
-socket.on("config", handleConfig);
-socket.on("tick", handleGameChange);
-
-function handleConfig(gameConfig: GameConfig) {
-  const { tileCount } = gameConfig;
+socket.on("config", ({ tileCount }: GameConfig) => {
   gameRenderer.setNumTiles({ ...tileCount });
-}
+});
 
-function handleGameChange(state: GameState) {
+socket.on("tick", (state: GameState) => {
   requestAnimationFrame(() => gameRenderer.draw(state));
-}
+});
 
 // event setup
 const touchStart = { x: 0, y: 0 };
