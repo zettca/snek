@@ -42,7 +42,7 @@ export class Snake extends Entity {
     this.nextDirection = null;
   }
 
-  move() {
+  override move() {
     if (this.nextDirection) {
       this.direction = this.nextDirection;
       this.nextDirection = null;
@@ -96,7 +96,7 @@ export class SnekManager extends EventEmitter<SnekEvents> {
   tileCount: { x: number; y: number };
   apples: Food[];
   obstacles: Entity[];
-  snakes: Record<SnakeId, Snake>;
+  snakes: Map<SnakeId, Snake>;
 
   constructor(options: GameOptions) {
     super();
@@ -115,7 +115,7 @@ export class SnekManager extends EventEmitter<SnekEvents> {
 
     this.apples = [];
     this.obstacles = Array.isArray(obstacles) ? obstacles : [];
-    this.snakes = {};
+    this.snakes = new Map<SnakeId, Snake>();
 
     for (let i = 0; i < apples; i++) this.addApple();
     for (let i = 0; i < obstacles; i++) this.addObstacle();
@@ -133,22 +133,22 @@ export class SnekManager extends EventEmitter<SnekEvents> {
     return {
       apples,
       obstacles,
-      snakes: Object.values(snakes),
+      snakes: snakes.values().toArray(),
     };
   };
 
   sendDirection = (id: SnakeId, dirCode: Direction) => {
-    const snake = this.snakes[id];
-    snake.setNextDirection(vecFromDirection(dirCode));
+    const snake = this.snakes.get(id);
+    snake?.setNextDirection(vecFromDirection(dirCode));
   };
 
   addSnake = (id: SnakeId) => {
     const snake = new Snake(this.getRandomEmptyPos(), new Vec2(1, 0));
-    this.snakes[id] = snake;
+    this.snakes.set(id, snake);
   };
 
   removeSnake = (id: SnakeId) => {
-    delete this.snakes[id];
+    this.snakes.delete(id);
   };
 
   addApple = () => {
@@ -169,8 +169,7 @@ export class SnekManager extends EventEmitter<SnekEvents> {
     if (this.apples.some((apple) => apple.position.equalTo(pos))) return false;
     if (this.obstacles.some((obs) => obs.position.equalTo(pos))) return false;
 
-    for (const sid in this.snakes) {
-      const snake = this.snakes[sid];
+    for (const [, snake] of this.snakes) {
       if (pos.equalTo(snake.position)) return false;
       for (const b of snake.body) {
         if (pos.equalTo(b)) return false;
@@ -191,19 +190,12 @@ export class SnekManager extends EventEmitter<SnekEvents> {
   };
 
   getCollidables = () => {
-    const { snakes, obstacles } = this;
     const collidables: Vec2[] = [];
 
-    obstacles.forEach((obs) => collidables.push(obs.position));
-    Object.values(snakes).forEach((snake) =>
-      snake.body.forEach((part) => collidables.push(part))
-    );
+    this.obstacles.forEach((obs) => collidables.push(obs.position));
+    this.snakes.values().forEach((snake) => collidables.push(...snake.body));
 
     return collidables;
-  };
-
-  handleMovement = (snake: Snake) => {
-    snake.move();
   };
 
   handleWrapping = (snake: Snake) => {
@@ -250,9 +242,8 @@ export class SnekManager extends EventEmitter<SnekEvents> {
   };
 
   tick = () => {
-    for (const sid in this.snakes) {
-      const snake = this.snakes[sid];
-      this.handleMovement(snake);
+    for (const [, snake] of this.snakes) {
+      snake.move();
       this.handleWrapping(snake);
       this.handleCollisions(snake);
     }
