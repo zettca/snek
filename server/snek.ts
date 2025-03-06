@@ -34,13 +34,19 @@ export class Food extends Entity {
 export class Snake extends Entity {
   body: Vec2[];
   size: number;
+  nextDirection: Vec2 | null;
   constructor(position: Vec2, direction: Vec2, size: number = 2) {
     super(position, direction);
     this.body = [];
     this.size = size;
+    this.nextDirection = null;
   }
 
   move() {
+    if (this.nextDirection) {
+      this.direction = this.nextDirection;
+      this.nextDirection = null;
+    }
     this.body.push(this.position.copy());
     this.slice();
     super.move();
@@ -62,10 +68,9 @@ export class Snake extends Entity {
   isColliding = (positions: Vec2[]) =>
     positions.some((pos) => this.position.equalTo(pos));
 
-  setDirection = (dir: Vec2) => {
-    if (!Vec2.opposites(this.direction, dir)) {
-      this.direction = dir;
-    }
+  setNextDirection = (dir: Vec2) => {
+    if (this.direction.oppositeTo(dir)) return;
+    this.nextDirection = dir;
   };
 }
 
@@ -75,7 +80,7 @@ export interface GameOptions {
   tiles: { x: number; y: number };
   tickTime: number;
   apples?: number;
-  obstacles?: Entity[] | number;
+  obstacles?: number;
 }
 
 type SnekEvents = {
@@ -113,10 +118,7 @@ export class SnekManager extends EventEmitter<SnekEvents> {
     this.snakes = {};
 
     for (let i = 0; i < apples; i++) this.addApple();
-
-    if (Number.isInteger(obstacles)) {
-      for (let i = 0; i < obstacles; i++) this.addObstacle();
-    }
+    for (let i = 0; i < obstacles; i++) this.addObstacle();
   }
 
   getConfig = () => {
@@ -137,7 +139,7 @@ export class SnekManager extends EventEmitter<SnekEvents> {
 
   sendDirection = (id: SnakeId, dirCode: Direction) => {
     const snake = this.snakes[id];
-    snake.setDirection(vecFromDirection(dirCode));
+    snake.setNextDirection(vecFromDirection(dirCode));
   };
 
   addSnake = (id: SnakeId) => {
@@ -165,6 +167,7 @@ export class SnekManager extends EventEmitter<SnekEvents> {
 
   isEmpty = (pos: Vec2) => {
     if (this.apples.some((apple) => apple.position.equalTo(pos))) return false;
+    if (this.obstacles.some((obs) => obs.position.equalTo(pos))) return false;
 
     for (const sid in this.snakes) {
       const snake = this.snakes[sid];

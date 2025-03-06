@@ -20,6 +20,8 @@ export class Vec2 {
 
   equalTo = (v2: Vec2) => Vec2.equals(this, v2);
 
+  oppositeTo = (v2: Vec2) => Vec2.opposites(this, v2);
+
   copy = () => new Vec2(this.x, this.y);
 
   toString = () => `(${this.x}, ${this.y})`;

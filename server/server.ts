@@ -7,9 +7,9 @@ const io = new Server({ cors: { origin: true, credentials: true } });
 // game rooms setup
 const socketRooms: Record<string, SnekGame> = {};
 const gameRooms: Record<string, SnekGame> = {
-  room1: new SnekGame({ tickTime: 200, tiles: { x: 12, y: 12 }, apples: 1 }),
-  room2: new SnekGame({ tickTime: 100, tiles: { x: 20, y: 20 }, apples: 2 }),
-  room3: new SnekGame({ tickTime: 100, tiles: { x: 32, y: 32 }, apples: 4 }),
+  room1: new SnekGame({ tickTime: 160, tiles: { x: 12, y: 12 }, apples: 2 }),
+  room2: new SnekGame({ tickTime: 120, tiles: { x: 20, y: 20 }, apples: 2 }),
+  room3: new SnekGame({ tickTime: 120, tiles: { x: 32, y: 32 }, apples: 4 }),
 };
 
 for (const roomId in gameRooms) {
